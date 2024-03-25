@@ -7,6 +7,20 @@ class Course < ApplicationRecord
   has_and_belongs_to_many :categories
 
   def first_lesson
-    lessons.order(:position).first
+    self.lessons.order(:position).first
+  end
+
+  def next_lesson(current_user)
+    return self.lessons.order(:position).first unless current_user.present?
+
+    completed_lessons = current_user.lesson_users.includes(:lesson).where(completed: true).where(lessons: { course_id: self.id})
+    started_lessons = current_user.lesson_users.includes(:lesson).where(completed: false).where(lesson: { course_id: self.id}).order(:position)
+
+    return started_lessons.first.lesson if started_lessons.any?
+
+    lessons = self.lessons.where.not(id: completed_lessons.pluck(:lesson_id)).order(:position)
+    return lessons.first if lessons.any?
+
+    self.lessons.order(:position).first
   end
 end
