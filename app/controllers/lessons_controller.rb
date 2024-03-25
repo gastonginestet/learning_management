@@ -11,6 +11,8 @@ class LessonsController < ApplicationController
     @course = @lesson.course
   end
 
+  private
+
   def set_lesson
     @lesson = Lesson.find(params[:id])
   end
