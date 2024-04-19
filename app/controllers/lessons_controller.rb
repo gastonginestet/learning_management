@@ -1,6 +1,7 @@
 class LessonsController < ApplicationController
   before_action :set_lesson, only: %i[show update]
   before_action :set_course
+  before_action :check_paid
 
   # GET /lessons or /lessons.json
   def index
@@ -11,6 +12,8 @@ class LessonsController < ApplicationController
   def show
     @completed_lessons = current_user.lesson_users.where(completed:true).pluck(:lesson_id)
     @course = @lesson.course
+    @paid_for_course = current_user.course_users.where(course: @course).exists?
+    puts "paid_for_course: #{@paid_for_course}"
   end
 
   def update
@@ -32,5 +35,15 @@ class LessonsController < ApplicationController
 
   def set_course
     @course = Course.find(params[:course_id])
+  end
+
+  def check_paid
+    if @lesson.paid && !current_user.course_users.where(course_id: params[:course_id]).exists?
+      if @lesson.previous_lesson
+        redirect_to course_lesson_path(@course, @lesson.previous_lesson), notice: "You must purchase the full course to access the next lesson"
+      else
+        redirect_to course_path(@course), notice: "You must purchase the full course to access the next lesson"
+      end
+    end
   end
 end
