@@ -7,6 +7,10 @@ class Admin::CoursesController < AdminController
     @admin_course = Course.new
   end
 
+  def show
+    @admin_course = Course.find(params[:id])
+  end
+
   def create
     @admin_course = Course.new(course_params)
 
