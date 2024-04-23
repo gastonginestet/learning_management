@@ -11,11 +11,9 @@ class Admin::LessonsController < AdminController
   end
 
   def show
-    
   end
 
   def edit
-    
   end
 
   def update
@@ -70,5 +68,4 @@ class Admin::LessonsController < AdminController
   def set_lesson
     @admin_lesson = Lesson.find(params[:id])
   end
-
 end
