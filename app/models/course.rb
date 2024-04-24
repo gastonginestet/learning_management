@@ -10,6 +10,13 @@ class Course < ApplicationRecord
   has_rich_text :description
   has_rich_text :premium_description
 
+  scope :most_popular_courses, lambda {
+    Course.joins(:course_users)
+          .group(:id)
+          .order('count(course_users.id) desc')
+          .limit(5)
+  }
+
   def first_lesson
     self.lessons.order(:position).first
   end
