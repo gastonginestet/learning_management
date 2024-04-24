@@ -7,14 +7,12 @@ class Admin::LessonsController < AdminController
   end
 
   def new
-    @admin_lesson = @admin_course.lessons.new 
+    @admin_lesson = @admin_course.lessons.new
   end
 
-  def show
-  end
+  def show; end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @admin_lesson.update(lesson_params)
@@ -42,7 +40,7 @@ class Admin::LessonsController < AdminController
 
   def move
     position = params[:position].to_i
-    if position == 0
+    if position.zero?
       @admin_lesson.move_to_top
     elsif position == @admin_course.lessons.count - 1
       @admin_lesson.move_to_bottom
